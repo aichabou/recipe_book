@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>Ajouter la recette "{{ recipe.name }}" à une collection</h1>
+
+    {% if recipeCollection.getUserId() %}
+        <p>Utilisateur : {{ recipeCollection.getUserId().getUsername() }}</p>
+    {% endif %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
+{% endblock %}

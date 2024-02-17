@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle recette{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Add Recipe</h1>
+        {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.ingredients) }}
+            {{ form_widget(form.ingredients) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.instructions) }}
+            {{ form_widget(form.instructions) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Add Recipe</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

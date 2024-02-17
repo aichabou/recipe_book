@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Bienvenue sur notre livre de recettes !</h1>
+
+  <div>
+    <a href="{{ path('app_recipe') }}">Ajouter une recette</a>
+</div>
+<br>
+<br>
+<div>
+    {% for recipe in recipes %}
+        <div>
+            <a href="{{ path('app_recipe_id', {'name': recipe.name}) }}">
+                {% if recipe.image %}
+                    <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}" width="200" height="150">
+                {% endif %}
+                <h2>{{ recipe.name }}</h2>
+            </a>
+            <p>{{ recipe.description }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
