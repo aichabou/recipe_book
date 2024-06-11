@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\DBAL\ParameterType;
 use App\Entity\Recipe;
 use App\Entity\FavoriteRecipe;
 use App\Entity\RecipeCollection;
@@ -28,19 +29,29 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipe/add', name: 'app_recipe')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($recipe);
-            $entityManager->flush();
+            $conn = $this->em->getConnection();
+            $sql = '
+                INSERT INTO recipe (name, description, ingredients, instructions)
+                VALUES (:name, :description, :ingredients, :instructions)
+            ';
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue('name', $recipe->getName(), ParameterType::STRING);
+            $stmt->bindValue('description', $recipe->getDescription(), ParameterType::STRING);
+            $stmt->bindValue('ingredients', $recipe->getIngredients(), ParameterType::STRING);
+            $stmt->bindValue('instructions', $recipe->getInstructions(), ParameterType::STRING);
+            $stmt->executeStatement();
 
-            return $this->redirectToRoute('app_home', ['id' => $recipe->getId()]);
+            $recipeId = $conn->lastInsertId();
+
+            return $this->redirectToRoute('app_home', ['id' => $recipeId]);
         }
 
         return $this->render('recipe/recipe.html.twig', [
@@ -53,15 +64,16 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Route('/recipe/find/{name}', name: 'app_recipe_id')]
-    public function show(EntityManagerInterface $entityManager, string $name): Response
+    public function show(string $name): Response
     {
-        $query = $entityManager->createQuery(
-            'SELECT r
-            FROM App\Entity\Recipe r
-            WHERE r.name = :name'
-        )->setParameter('name', $name);
+        $conn = $this->em->getConnection();
+        $sql = 'SELECT * FROM recipe WHERE name = :name';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('name', $name, ParameterType::STRING);
+        $result = $stmt->executeQuery();
 
-        $recipe = $query->getOneOrNullResult();
+        // Try both fetch() and fetchAssociative() for compatibility
+        $recipe = method_exists($result, 'fetchAssociative') ? $result->fetchAssociative() : $result->fetch();
 
         return $this->render('recipe/recipeId.html.twig', [
             'recipe' => $recipe
@@ -79,8 +91,23 @@ class RecipeController extends AbstractController
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($recipe);
-            $this->em->flush();
+            $conn = $this->em->getConnection();
+            $sql = '
+            UPDATE recipe
+            SET name = :name,
+                description = :description,
+                ingredients = :ingredients,
+                instructions = :instructions
+            WHERE id = :id
+        ';
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue('name', $recipe->getName(), ParameterType::STRING);
+            $stmt->bindValue('description', $recipe->getDescription(), ParameterType::STRING);
+            $stmt->bindValue('ingredients', $recipe->getIngredients(), ParameterType::STRING);
+            $stmt->bindValue('instructions', $recipe->getInstructions(), ParameterType::STRING);
+            $stmt->bindValue('id', $recipe->getId(), ParameterType::INTEGER);
+            $stmt->executeStatement();
+
             return $this->redirectToRoute('app_recipe');
         }
         return $this->render('recipe/recipe.html.twig', [
@@ -96,90 +123,125 @@ class RecipeController extends AbstractController
     #[Route('/recipe/delete/{recipe}', name: 'app_recipe_delete')]
     public function delete(Recipe $recipe, Request $request): Response
     {
-        $this->em->remove($recipe);
-        $this->em->flush();
+        $conn = $this->em->getConnection();
+        $sql = 'DELETE FROM recipe WHERE id = :id';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('id', $recipe->getId(), ParameterType::INTEGER);
+        $stmt->executeStatement();
 
-        return $this->redirectToRoute("app_recipe");
+        return $this->redirectToRoute("app_home");
     }
 
-    /**
-     * @param Recipe $recipe
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/recipe/favorite/{recipe}', name: 'app_recipe_favorite')]
-    public function favoriteRecipe(Recipe $recipe, Request $request, RecipeService $recipeService, EntityManagerInterface $entityManager): Response
-    {
+    // /**
+    //  * @param Recipe $recipe
+    //  * @param Request $request
+    //  * @return Response
+    //  */
+    // #[Route('/recipe/favorite/{recipe}', name: 'app_recipe_favorite')]
+    // public function favoriteRecipe(Recipe $recipe, Request $request, RecipeService $recipeService, EntityManagerInterface $entityManager): Response
+    // {
+    //     $user = $this->getUser();
+    //     if (!$user) {
+    //         return $this->redirectToRoute('app_login');
+    //     }
 
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
+    //     $conn = $this->em->getConnection();
 
-        $repository = $entityManager->getRepository(FavoriteRecipe::class);
-        $favoriteRecipe = $repository->findOneBy(['user_id' => $user, 'id' => $recipe]);
+    //     // Obtenir l'ID de l'utilisateur
+    //     // $userId = $user->getId();
 
-        if (!$favoriteRecipe) {
-            $recipeService->addRecipeToFavorites($user, $recipe);
-            $this->addFlash('success', 'La recette est bien ajouté à favorite.');
-        } else {
-            $this->addFlash('warning', 'La recette est dèja dans favorite.');
-        }
+    //     // // Vérifier si la recette est déjà dans les favoris de l'utilisateur
+    //     // $sql = 'SELECT COUNT(*) FROM favorite_recipe WHERE user_id = :userId AND recipe_id = :recipeId';
+    //     // $stmt = $conn->prepare($sql);
+    //     // $stmt->bindValue('userId', $userId, ParameterType::INTEGER);
+    //     // $stmt->bindValue('recipeId', $recipe->getId(), ParameterType::INTEGER);
+    //     // $stmt->executeQuery();
+    //     // $count = (int) $stmt->fetchColumn();
 
-        return $this->redirectToRoute('app_recipe_id', [
-            'id' => $recipe->getId(),
-            'name' => $recipe->getName(),
-            'message' => 'recipe_favorite'
-        ]);
-    }
+    //     // if ($count === 0) {
+    //         // Si la recette n'est pas encore dans les favoris, l'ajouter
+    //         $sql = 'INSERT INTO favorite_recipe (user_id, recipe_id) VALUES (:userId, :recipeId)';
+    //         $stmt = $conn->prepare($sql);
+    //         $stmt->bindValue('userId', $user->getUserId(), ParameterType::INTEGER);
+    //         $stmt->bindValue('recipeId', $recipe->getId(), ParameterType::INTEGER);
+    //         $stmt->executeStatement();
 
-    /**
-     * @param Recipe $recipe
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/recipe/collection/{recipe}', name: 'app_recipe_collection')]
-    public function collection(Recipe $recipe, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Récupération de la collection associée à l'utilisateur courant et à la recette en question
-        $repository = $entityManager->getRepository(RecipeCollection::class);
-        $recipeCollection = $repository->findOneBy([
-            'user_id' => $this->getUser(),
-            'id' => $recipe
-        ]);
+    //         $this->addFlash('success', 'La recette a été ajoutée aux favoris.');
+    //     // } else {
+    //     //     $this->addFlash('warning', 'La recette est déjà dans les favoris.');
+    //     // }
 
-        // Création d'un nouveau formulaire pour ajouter la recette à une collection
-        $form = $this->createForm(RecipeCollectionType::class);
+    //     return $this->redirectToRoute('app_recipe_id', [
+    //         'id' => $recipe->getId(),
+    //         'name' => $recipe->getName(),
+    //         'message' => 'recipe_favorite'
+    //     ]);
+    // }
 
-        $form->handleRequest($request);
+    // /**
+    //  * @param Recipe $recipe
+    //  * @param Request $request
+    //  * @return Response
+    //  */
+    // #[Route('/recipe/collection/{recipe}', name: 'app_recipe_collection')]
+    // public function collection(Recipe $recipe, Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $user = $this->getUser();
+    //     if (!$user) {
+    //         return $this->redirectToRoute('app_login');
+    //     }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Récupération des données du formulaire
-            $data = $form->getData();
+    //     $conn = $this->em->getConnection();
 
-            // Création d'une nouvelle collection si elle n'existe pas déjà
-            if (!$recipeCollection) {
-                $recipeCollection = new RecipeCollection();
-                $recipeCollection->setName($data['name']);
-                $recipeCollection->setUserId($this->getUser());
-            }
+    //     // Récupération de la collection associée à l'utilisateur courant et à la recette en question
+    //     $userId = $user->getId();
+    //     $recipeId = $recipe->getId();
 
-            // Ajout de la recette à la collection
-            $recipeCollection->addRecipeId($recipe);
-            $entityManager->persist($recipeCollection);
-            $entityManager->flush();
+    //     $sql = 'SELECT * FROM recipe_collection WHERE user_id = :userId AND recipe_id = :recipeId';
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->bindValue('userId', $userId, ParameterType::INTEGER);
+    //     $stmt->bindValue('recipeId', $recipeId, ParameterType::INTEGER);
+    //     $stmt->executeQuery();
+    //     $recipeCollection = $stmt->fetchAssociative();
 
-            $this->addFlash('success', 'Recipe added to collection.');
 
-            return $this->redirectToRoute('app_recipe_collection', [
-                'recipe' => $recipe->getId(),
-            ]);
-        }
+    //     // Création d'un nouveau formulaire pour ajouter la recette à une collection
+    //     $form = $this->createForm(RecipeCollectionType::class);
 
-        return $this->render('recipe/collection.html.twig', [
-            'form' => $form->createView(),
-            'recipe' => $recipe,
-            'recipeCollection' => $recipeCollection,
-        ]);
-    }
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         // Récupération des données du formulaire
+    //         $data = $form->getData();
+
+    //         // Création d'une nouvelle collection si elle n'existe pas déjà
+    //         if (!$recipeCollection) {
+    //             $sql = 'INSERT INTO recipe_collection (user_id, recipe_id, name) VALUES (:userId, :recipeId, :name)';
+    //             $stmt = $conn->prepare($sql);
+    //             $stmt->bindValue('userId', $userId, ParameterType::INTEGER);
+    //             $stmt->bindValue('recipeId', $recipeId, ParameterType::INTEGER);
+    //             $stmt->bindValue('name', $data['name'], ParameterType::STRING);
+    //             $stmt->executeStatement();
+    //         }
+
+    //         // Ajout de la recette à la collection
+    //         $sql = 'INSERT INTO recipe_collection_recipe (collection_id, recipe_id) VALUES (:collectionId, :recipeId)';
+    //         $stmt = $conn->prepare($sql);
+    //         $stmt->bindValue('collectionId', $recipeCollection['id'], ParameterType::INTEGER);
+    //         $stmt->bindValue('recipeId', $recipeId, ParameterType::INTEGER);
+    //         $stmt->executeStatement();
+
+    //         $this->addFlash('success', 'Recipe added to collection.');
+
+    //         return $this->redirectToRoute('app_recipe_collection', [
+    //             'recipe' => $recipeId,
+    //         ]);
+    //     }
+
+    //     return $this->render('recipe/collection.html.twig', [
+    //         'form' => $form->createView(),
+    //         'recipe' => $recipe,
+    //         'recipeCollection' => $recipeCollection,
+    //     ]);
+    // }
 }

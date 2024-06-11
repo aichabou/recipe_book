@@ -26,24 +26,6 @@
                 <button type="submit">Supprimer la recette</button>
             </form>
         </div>
-        <div>
-            <form action="{{ path('app_recipe_favorite', {'recipe': recipe.id}) }}" method="post">
-                <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ recipe.id) }}">
-                <button type="submit">Favorite</button>
-            </form>
-            {% if app.request.query.get('message') == 'recipe_favorite' %}
-                {% for message in app.session.flashbag.get('success') %}
-                    <div class="alert alert-success">{{ message }}</div>
-                {% endfor %}
-               {% for message in app.session.flashbag.get('warning') %}
-                    <div class="alert alert-warning">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            <form action="{{ path('app_recipe_collection', {'recipe': recipe.id}) }}" method="post">
-                <input type="hidden" name="_token" value="{{ csrf_token('collection' ~ recipe.id) }}">
-                <button type="submit">Ajouter à une collection</button>
-            </form>
-        </div>
     {% else %}
         <p>Recette non trouvée.</p>
     {% endif %}
