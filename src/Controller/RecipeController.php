@@ -100,32 +100,68 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Route('/recipe/update/{recipe}', name: 'app_recipe_update')]
-    public function update(Recipe $recipe, Request $request): Response
+    public function update(Recipe $recipe, Request $request, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            $newFilename = null;
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                    // Delete the old image if it exists
+                    if ($recipe->getImage()) {
+                        $oldImagePath = $this->getParameter('images_directory') . '/' . $recipe->getImage();
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Failed to upload image');
+                    return $this->redirectToRoute('app_recipe_update', ['recipe' => $recipe->getId()]);
+                }
+            }
+
+            // Update the Recipe entity with the new image filename
+            $recipe->setImage($newFilename);
+
+            // Update the Recipe entity in the database using a custom SQL query
             $conn = $this->em->getConnection();
             $sql = '
-            UPDATE recipe
-            SET name = :name,
-                description = :description,
-                ingredients = :ingredients,
-                instructions = :instructions
-            WHERE id = :id
-        ';
+                UPDATE recipe
+                SET name = :name,
+                    description = :description,
+                    ingredients = :ingredients,
+                    instructions = :instructions,
+                    image = :image
+                WHERE id = :id
+            ';
             $stmt = $conn->prepare($sql);
             $stmt->bindValue('name', $recipe->getName(), ParameterType::STRING);
             $stmt->bindValue('description', $recipe->getDescription(), ParameterType::STRING);
             $stmt->bindValue('ingredients', $recipe->getIngredients(), ParameterType::STRING);
             $stmt->bindValue('instructions', $recipe->getInstructions(), ParameterType::STRING);
+            $stmt->bindValue('image', $recipe->getImage(), ParameterType::STRING);
             $stmt->bindValue('id', $recipe->getId(), ParameterType::INTEGER);
             $stmt->executeStatement();
 
-            return $this->redirectToRoute('app_recipe');
+            // Redirect to the recipe details page after update
+            return $this->redirectToRoute('app_recipe_id', ['name' => $recipe->getName()]);
         }
+
         return $this->render('recipe/recipe.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'recipe' => $recipe,
         ]);
     }
 
