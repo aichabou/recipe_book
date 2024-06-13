@@ -4,32 +4,26 @@ namespace App\Controller;
 
 use Doctrine\DBAL\ParameterType;
 use App\Entity\Recipe;
-use App\Entity\FavoriteRecipe;
-use App\Entity\RecipeCollection;
-use App\Form\RecipeCollectionType;
 use App\Form\RecipeType;
-use App\Service\RecipeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class RecipeController extends AbstractController
 {
-    private $recipeService;
     private EntityManagerInterface $em;
 
-    /**
-     * @param EntityManagerInterface $em
-     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
 
     #[Route('/recipe/add', name: 'app_recipe')]
-    public function new(Request $request): Response
+    public function new(Request $request, SluggerInterface $slugger): Response
     {
         $recipe = new Recipe();
 
@@ -37,16 +31,36 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            $newFilename = null;
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Failed to upload image');
+                    return $this->redirectToRoute('app_recipe');
+                }
+            }
+
             $conn = $this->em->getConnection();
             $sql = '
-                INSERT INTO recipe (name, description, ingredients, instructions)
-                VALUES (:name, :description, :ingredients, :instructions)
+                INSERT INTO recipe (name, description, ingredients, instructions, image, created_by)
+                VALUES (:name, :description, :ingredients, :instructions, :image, :created_by)
             ';
             $stmt = $conn->prepare($sql);
             $stmt->bindValue('name', $recipe->getName(), ParameterType::STRING);
             $stmt->bindValue('description', $recipe->getDescription(), ParameterType::STRING);
             $stmt->bindValue('ingredients', $recipe->getIngredients(), ParameterType::STRING);
             $stmt->bindValue('instructions', $recipe->getInstructions(), ParameterType::STRING);
+            $stmt->bindValue('image', $newFilename, ParameterType::STRING);
+            $stmt->bindValue('created_by', $recipe->getCreatedBy(), ParameterType::INTEGER);
             $stmt->executeStatement();
 
             $recipeId = $conn->lastInsertId();

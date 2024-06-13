@@ -5,26 +5,26 @@
 {% block body %}
     <div class="container mt-4">
         <h1>Add Recipe</h1>
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
         <div class="form-group">
             {{ form_label(form.name) }}
-            {{ form_widget(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
         </div>
         <div class="form-group">
             {{ form_label(form.description) }}
-            {{ form_widget(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
         </div>
         <div class="form-group">
             {{ form_label(form.ingredients) }}
-            {{ form_widget(form.ingredients) }}
+            {{ form_widget(form.ingredients, {'attr': {'class': 'form-control'}}) }}
         </div>
         <div class="form-group">
             {{ form_label(form.instructions) }}
-            {{ form_widget(form.instructions) }}
+            {{ form_widget(form.instructions, {'attr': {'class': 'form-control'}}) }}
         </div>
         <div class="form-group">
             {{ form_label(form.image) }}
-            {{ form_widget(form.image) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
         </div>
         <button type="submit" class="btn btn-primary">Add Recipe</button>
         {{ form_end(form) }}
