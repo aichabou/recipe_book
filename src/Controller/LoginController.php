@@ -24,4 +24,11 @@ class LoginController extends AbstractController
             'error'         => $error,
         ]);
     }
+
+    #[Route('/logout', name: 'app_logout')]
+    public function logout()
+    {
+        // The security layer will intercept this request
+        throw new \Exception('This should never be reached!');
+    }
 }
