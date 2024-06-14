@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue à Aicha's sweettooth{% endblock %}
+
+{% block body %}
+
+    <main class="l-main">
+        <section class="home bd-grid" id="home">
+            <div class="home__data">
+                <h1 class="home__title">
+                    Bienvenue à <span class="home__title-color">Aicha's sweettooth</span>
+                    Mon Blog personnel de pâtisserie
+                </h1>
+            </div>
+            <div class="home__img">
+                <img src="{{ asset('images/profil_blog.png') }}" alt="photo de profil" />
+            </div>
+        </section>
+    </main>
+
+{% endblock %}

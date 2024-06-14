@@ -1,0 +1,19 @@
+<header class="header">
+    <nav class="nav">
+        <ul class="nav__list">
+            {% if not app.user %}
+                <li class="nav__item"><a class="nav__link{% if app.request.attributes.get('_route') == 'home' %} active{% endif %}">Accueil</a></li>
+                <li class="nav__item"><a href="{{ path('app_login') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_login' %} active{% endif %}">Connexion</a></li>
+                <li class="nav__item"><a href="{{ path('app_register') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_register' %} active{% endif %}">Inscription</a></li>
+            {% else %}
+                <li class="nav__item"><a  class="nav__link{% if app.request.attributes.get('_route') == 'home' %} active{% endif %}">Accueil</a></li>
+                <li class="nav__item"><a  class="nav__link{% if app.request.attributes.get('_route') == 'recipes' %} active{% endif %}">Recettes</a></li>
+                <li class="nav__item">
+                    <form action="{{ path('app_logout') }}" method="post">
+                        <button type="submit" class="nav__link">Déconnexion</button>
+                    </form>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>

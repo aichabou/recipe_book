@@ -1,16 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <form id="loginForm" action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password" required>
-
-        <button type="submit">Login</button>
-        <small id="formError" class="form-text text-muted" style="color: red; display: none;"></small>
-    </form>
+    <div class="bording-container">
+        <div class="bording-box">
+            <h2 class="section-title">Login</h2>
+            <form id="loginForm" action="{{ path('app_login') }}" method="post">
+                <div class="form-group">
+                    <label for="username" class="common-style">Email:</label>
+                    <input type="text" id="username" name="_username" value="{{ last_username }}" class="rounded-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="common-style">Password:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="_password" class="rounded-input" required>
+                        <span class="toggle-password">Show</span>
+                    </div>
+                </div>
+                <button type="submit" class="bording-button">Login</button>
+                <small id="formError" class="common-style" style="color: red; display: none;"></small>
+            </form>
+        </div>
+    </div>
 
     <script>
         document.querySelector('#loginForm').addEventListener('submit', function(event) {
