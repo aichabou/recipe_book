@@ -1,22 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{# ... #}
-
 {% block body %}
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    <form action="{{ path('app_login') }}" method="post">
+    <form id="loginForm" action="{{ path('app_login') }}" method="post">
         <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+        <input type="text" id="username" name="_username" value="{{ last_username }}" required>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
+        <input type="password" id="password" name="_password" required>
 
-        {# If you want to control the URL the user is redirected to on success
-        <input type="hidden" name="_target_path" value="/account"> #}
-
-        <button type="submit">login</button>
+        <button type="submit">Login</button>
+        <small id="formError" class="form-text text-muted" style="color: red; display: none;"></small>
     </form>
+
+    <script>
+        document.querySelector('#loginForm').addEventListener('submit', function(event) {
+            const email = document.querySelector('#username').value;
+            const password = document.querySelector('#password').value;
+            const formError = document.querySelector('#formError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let valid = true;
+
+            // Vérification de l'email
+            if (!email || !emailRegex.test(email)) {
+                valid = false;
+            }
+
+            // Vérification du mot de passe
+            if (!password || password.length < 6) {
+                valid = false;
+            } else {
+                // Vérification des critères supplémentaires pour le mot de passe
+                const hasUpperCase = /[A-Z]/.test(password);
+                const hasLowerCase = /[a-z]/.test(password);
+                const hasDigit = /[0-9]/.test(password);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Liste des caractères spéciaux à vérifier
+
+                if (!(hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar)) {
+                    valid = false;
+                }
+            }
+
+            // Affichage du message d'erreur si les informations sont invalides
+            if (!valid) {
+                formError.innerText = 'Invalid email or password.';
+                formError.style.display = 'block';
+                event.preventDefault(); // Empêche l'envoi du formulaire
+            } else {
+                formError.style.display = 'none';
+            }
+        });
+    </script>
 {% endblock %}

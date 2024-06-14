@@ -6,12 +6,80 @@
     <h1>Register</h1>
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
+        {{ form_row(registrationForm.email, {
+            'attr': {'oninput': 'validateEmail()'}
         }) }}
+        <small id="emailHelp" class="form-text text-muted">
+            Your email should be a valid email address.
+        </small>
+        
+        {{ form_row(registrationForm.username) }}
+        
+        {{ form_row(registrationForm.plainPassword, {
+            'label': 'Password',
+            'attr': {'oninput': 'validatePassword()'}
+        }) }}
+        <small id="passwordHelp" class="form-text text-muted">
+            Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
+        </small>
 
-        <button type="submit" class="btn">Register</button>
+        <button type="submit" id="registerButton" class="btn" disabled>Register</button>
     {{ form_end(registrationForm) }}
+
+    <script>
+        function validateEmail() {
+            const email = document.querySelector('#registration_form_email').value;
+            const emailHelp = document.querySelector('#emailHelp');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let message = '';
+
+            if (email.length === 0) {
+                message = 'Email is required.';
+            } else if (!emailRegex.test(email)) {
+                message = 'Invalid email format. A valid email should be like: user@example.com.';
+            } else {
+                message = 'Valid email address.';
+            }
+
+            emailHelp.style.color = emailRegex.test(email) ? 'green' : 'red';
+            emailHelp.innerText = message;
+            validateForm();
+        }
+
+        function validatePassword() {
+            const password = document.querySelector('#registration_form_plainPassword').value;
+            const passwordHelp = document.querySelector('#passwordHelp');
+            let message = '';
+            const minLength = 6;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            if (password.length === 0) {
+                message = 'Password is required.';
+            } else if (password.length < minLength) {
+                message = `Your password should be at least ${minLength} characters long. Currently, it has ${password.length} characters.`;
+            } else if (!hasUpperCase) {
+                message = 'Your password should contain at least one uppercase letter.';
+            } else if (!hasSpecialChar) {
+                message = 'Your password should contain at least one special character.';
+            } else {
+                message = 'Valid password.';
+            }
+
+            passwordHelp.style.color = (password.length >= minLength && hasUpperCase && hasSpecialChar) ? 'green' : 'red';
+            passwordHelp.innerText = message;
+            validateForm();
+        }
+
+        function validateForm() {
+            const emailHelp = document.querySelector('#emailHelp');
+            const passwordHelp = document.querySelector('#passwordHelp');
+            const registerButton = document.querySelector('#registerButton');
+            if (emailHelp.style.color === 'green' && passwordHelp.style.color === 'green') {
+                registerButton.disabled = false;
+            } else {
+                registerButton.disabled = true;
+            }
+        }
+    </script>
 {% endblock %}
