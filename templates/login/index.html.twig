@@ -13,7 +13,7 @@
                     <label for="password" class="common-style">Password:</label>
                     <div class="password-input-container">
                         <input type="password" id="password" name="_password" class="rounded-input" required>
-                        <span class="toggle-password">Show</span>
+                        <span class="toggle-password" onclick="togglePassword()">Show</span>
                     </div>
                 </div>
                 <button type="submit" class="bording-button">Login</button>
@@ -23,6 +23,19 @@
     </div>
 
     <script>
+        // Fonction pour montrer/cacher le mot de passe
+        function togglePassword() {
+            const passwordInput = document.querySelector('#password');
+            const togglePassword = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                togglePassword.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                togglePassword.textContent = 'Show';
+            }
+        }
+
         document.querySelector('#loginForm').addEventListener('submit', function(event) {
             const email = document.querySelector('#username').value;
             const password = document.querySelector('#password').value;

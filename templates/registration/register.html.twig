@@ -9,42 +9,45 @@
 
             {{ form_start(registrationForm) }}
 
-                <div class="common-style">
-                    {{ form_row(registrationForm.username, {
-                        'label': 'Username',
-                        'attr': {
-                            'class': 'rounded-input'
-                        }
-                    }) }}
-                </div>
+            <div class="common-style">
+                {{ form_row(registrationForm.username, {
+                    'label': 'Username',
+                    'attr': {
+                        'class': 'rounded-input'
+                    }
+                }) }}
+            </div>
 
-                                <div class="common-style">
-                    {{ form_row(registrationForm.email, {
-                        'label': 'Email',
-                        'attr': {
-                            'class': 'rounded-input',
-                            'oninput': 'validateEmail()'
-                        }
-                    }) }}
-                    <small id="emailHelp" class="form-text text-muted">
-                        Your email should be a valid email address.
-                    </small>
-                </div>
+            <div class="common-style">
+                {{ form_row(registrationForm.email, {
+                    'label': 'Email',
+                    'attr': {
+                        'class': 'rounded-input',
+                        'oninput': 'validateEmail()'
+                    }
+                }) }}
+                <small id="emailHelp" class="form-text text-muted">
+                    Your email should be a valid email address.
+                </small>
+            </div>
 
-                <div class="common-style">
-                    {{ form_row(registrationForm.plainPassword, {
-                        'label': 'Password',
+            <div class="common-style">
+                {{ form_label(registrationForm.plainPassword, 'Password') }}
+                <div class="password-input-container">
+                    {{ form_widget(registrationForm.plainPassword, {
                         'attr': {
                             'class': 'rounded-input',
                             'oninput': 'validatePassword()'
                         }
                     }) }}
-                    <small id="passwordHelp" class="form-text text-muted">
-                        Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
-                    </small>
+                    <span class="toggle-password" onclick="togglePassword()">Show</span>
                 </div>
+                <small id="passwordHelp" class="form-text text-muted">
+                    Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
+                </small>
+            </div>
 
-                <button type="submit" id="registerButton" class="bording-button" disabled>Register</button>
+            <button type="submit" id="registerButton" class="bording-button" disabled>Register</button>
             {{ form_end(registrationForm) }}
         </div>
     </div>
@@ -102,6 +105,18 @@
                 registerButton.disabled = false;
             } else {
                 registerButton.disabled = true;
+            }
+        }
+
+        function togglePassword() {
+            const passwordField = document.querySelector('#registration_form_plainPassword');
+            const togglePasswordButton = document.querySelector('.toggle-password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                togglePasswordButton.innerText = 'Hide';
+            } else {
+                passwordField.type = 'password';
+                togglePasswordButton.innerText = 'Show';
             }
         }
     </script>
