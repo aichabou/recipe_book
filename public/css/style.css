@@ -94,11 +94,15 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+  margin-bottom: 30px;
 }
 
 /*===== CLASS CSS ===== */
 .section-title {
-  font-size: 50px;
+  font-size: 35px;
   background: linear-gradient(120deg,
       #84A59D 35.69%,
       #F5CAC3 50.19%,
@@ -112,13 +116,13 @@ img {
 
 @media screen and (max-width: 768px) {
   .section-title {
-    font-size: 40px;
+    font-size: 30px;
   }
 }
 
 @media screen and (max-width: 600px) {
   .section-title {
-    font-size: 30px;
+    font-size: 20px;
   }
 }
 
@@ -138,132 +142,93 @@ img {
   margin-right: var(--mb-2);
 }
 
-  /*===== NAV =====*/
-  .l-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+/*===== NAV =====*/
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: var(--first-color);
+  color: #fff;
+  margin-left: -70px;
+}
 
-  .bd-grid{
-    margin: auto 0;
-  }
-  
+.nav__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.nav__item {
+  margin-left: 20px; /* Espacement entre les éléments de la liste */
+}
+
+.nav__item a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.nav__item a:hover {
+  text-decoration: underline;
+}
+
+/* Styles pour le menu burger */
+.nav__burger {
+  display: none; /* Masque le menu burger par défaut */
+  font-size: 1.5rem; /* Taille de l'icône du burger */
+  cursor: pointer; /* Curseur indiquant qu'il s'agit d'un élément cliquable */
+}
+.logo {
+  width: 20px;
+  height: 20px;
+}
+
+/* Sidebar pour les écrans mobiles */
+@media screen and (max-width: 768px) {
   .nav {
-    height: var(--header-height);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: var(--font-semi);
-    padding-left: 10px;
-  }
-  
-  .nav__list{
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .nav__item{
-    font-size: 10px;
-    margin-right: 10px;
-    margin-left: 20px;
-    margin-top: 7px;
-  }
-  
-  .nav__link {
-    position: relative;
-    color: var(--second-color);
-  }
-  
-  .nav__link:hover {
-    position: relative;
-  }
-  
-  .nav__link:hover::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    height: 0.18rem;
-    left: 0;
-    top: 1rem;
-    background-color: var(--first-color);
-  }
-  
-  .nav__toggle {
-    color: var(--second-color);
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .logo {
-    width: 20px;
-    height: 20px;
-  }
-  
-  @media screen and (min-width: 768px) {
-    .l-header {
-      display: flex;
-      justify-content: center;
-    }
-    .bd-grid{
-      margin: auto 0;
-    }
-    
-    .nav {
-      display: flex;
-      align-items: center;
-    }
-    .nav__menu{
-      padding-left: 60px;
-    }
-
-    .nav__item{
-      font-size: 13px;
-      margin-right: 30px;
-      margin-left: 20px;
-      margin-top: 7px;
-    }
-    
-    .nav__link:hover {
+       /* Affiche les éléments en colonne pour les petits écrans */
       position: relative;
-    }
-    
-    .nav__link:hover::after {
-      top:  2rem;
-    }
-    .logo {
-      width: 35px;
-      height: 35px;
-      margin-right:50px ;
-    }
-  }
-  
-  @media screen and (min-width: 1024px) {
-    .l-header {
-      justify-content: center;
-    }
-    .nav {
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-    }
-    .nav__item{
-      font-size: 17px;
-    }
-    .logo {
-      width: 40px;
-      height: 40px;
-    }
-    .nav__menu{
-      padding-left: 170px;
-    }
+      margin-top: -25px;
   }
 
-  @media screen and (min-width: 1440px) {
-    .nav__item{
-      font-size: 20px;
-    }
+  .nav__list {
+      display: none; /* Masque la liste de navigation par défaut */
+      position: absolute;
+      top: 100%; /* Positionne la liste sous le header */
+      left: 0;
+      width: 100%;
+      background-color: var(--first-color); /* Couleur de fond du sidebar */
+      /* Ombre pour le sidebar */
+      z-index: 1000;
   }
+
+  .nav__list.active {
+      display: flex; /* Affiche la liste de navigation lorsqu'elle est active */
+      flex-direction: column;
+  }
+
+  .nav__item {
+      margin: 20px 0; /* Espacement entre les éléments de la liste dans le sidebar */
+      text-align: center; /* Centre les éléments du menu dans le sidebar */
+  }
+
+  .nav__item a {
+      display: block; /* Affiche les liens sur toute la largeur du sidebar */
+      padding: 15px 20px; /* Espacement intérieur des liens */
+  }
+
+
+  .nav__burger {
+      display: block; /* Affiche le menu burger uniquement pour les écrans mobiles */
+  }
+
+.logo--hidden {
+    opacity: 0; /* Masquer le logo en le rendant invisible */
+    pointer-events: none; /* Empêcher les interactions avec le logo lorsqu'il est invisible */
+}
+}
 
 
 /* ===== MEDIA QUERIES=====*/
@@ -352,7 +317,7 @@ img {
 }
 /* ===== LOGIN/REGISTER =====*/
 .section-title{
-  font-size: var(--h2-font-size);
+  font-size: 2Opx;
 }
 .common-style {
   font-size: 10px;
@@ -365,7 +330,6 @@ img {
 
 @media screen and (min-width: 768px) {
   .bording-box {
-    margin-top: 70px;
     width: 400px;
   }
   .rounded-input ,.bording-button{
@@ -407,6 +371,9 @@ img {
   border-radius: .5rem;
   border: 1px solid white;
 }
+#registerButton[disabled] {
+  cursor: not-allowed;
+}
 
 .button:hover {
   box-shadow: 0 10px 36px rgba(0, 0, 0, .15);
@@ -426,7 +393,6 @@ img {
   border-radius: 40px;
   padding: 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 400px;
 }
 
 .form-group {
@@ -546,7 +512,175 @@ input {
   }
 
 }
+@media screen and (max-width: 1240px) {
+  .work__container {
+    margin: 30px;
+  }
 
+}
+
+/* welcome*/
+
+.home__title {
+  font-size: var(--h2-font-size);
+  margin-top: 50px;
+  text-align: center;
+}
+
+.home__title-color {
+  color: var(--first-color);
+}
+
+.home__img {
+  width: 35%;
+  margin: 1rem auto;
+  display: block;
+  margin-top: 90px;
+  animation: glide 2s ease-in-out alternate infinite;
+  -webkit-animation: glide 2s ease-in-out alternate infinite;
+}
+
+.bd-grid {
+  margin: 0 auto;
+}
+
+@keyframes glide {
+  from {
+    left: 0px;
+    top: 0px;
+  }
+  to {
+    left: 0px;
+    top: 20px;
+  }
+}
+
+@-webkit-keyframes glide {
+  from {
+    left: 0px;
+    top: 0px;
+  }
+  to {
+    left: 0px;
+    top: 20px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .home__title {
+    margin-bottom: 2rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .home__img {
+    width: 30%;
+  }
+  .bd-grid {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .home__title {
+    font-size: 3.7rem;
+    margin-bottom: 6rem;
+    text-align: center;
+  }
+
+  .bd-grid {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 2560px) {
+  .home__title {
+    font-size: 5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+}
+/* ===== Recipe PAGE=====*/
+.section-title {
+  margin-top: 5px;
+}
+
+.about__text {
+  margin-right: 20px;
+  text-align: justify;
+}
+
+.points {
+  list-style-type: disc;
+  text-align: justify;
+  margin: 0 20px 0 20px;
+}
+
+.about__img img {
+  width: 200px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.video {
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.video video {
+  width: 270px;
+  height: 480px;
+  object-fit: cover;
+}
+
+.comment-section {
+  margin-top: 20px;
+}
+
+.comment-section textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.comment-section button {
+  padding: 10px 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 768px) {
+  .about__container {
+    margin: 30px;
+  }
+
+  .video video {
+    width: 300px;
+  }
+
+  .comment-section textarea {
+    font-size: 15px;
+  }
+
+  .comment-section button {
+    padding: 10px 20px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .about__container {
+    margin: 100px;
+  }
+
+  .video video {
+    width: 320px;
+  }
+}
 /* ===== MEDIA QUERIES=====*/
 @media screen and (min-width: 768px) {
   body {
@@ -643,6 +777,7 @@ input {
   color: #fff;
   text-align: center;
   font-weight: var(--font-semi);
+  padding: var(--mb-2) var(--mb-3); /* Ajouter un peu de padding pour un meilleur aspect */
 }
 
 .footer__social {
@@ -655,26 +790,51 @@ input {
   margin: 0 var(--mb-2);
 }
 
-.footer__copyright{
+.footer__copyright {
   font-size: 10px;
 }
 
+/* Media queries pour les tablettes */
 @media screen and (min-width: 768px) {
   .footer__icon {
     font-size: 1.25rem;
   }
   
-  .footer__copyright{
+  .footer__copyright {
     font-size: 12px;
+  }
+
+  .footer {
+    padding: var(--mb-3) var(--mb-4); /* Ajuster le padding pour les tablettes */
   }
 }
 
+/* Media queries pour les ordinateurs portables */
 @media screen and (min-width: 1024px) {
   .footer__icon {
     font-size: 1.5rem;
   }
   
-  .footer__copyright{
+  .footer__copyright {
     font-size: 15px;
+  }
+
+  .footer {
+    padding: var(--mb-4) var(--mb-5); /* Ajuster le padding pour les ordinateurs portables */
+  }
+}
+
+/* Media queries pour les grands écrans */
+@media screen and (min-width: 1440px) {
+  .footer__icon {
+    font-size: 1.75rem;
+  }
+  
+  .footer__copyright {
+    font-size: 18px;
+  }
+
+  .footer {
+    padding: var(--mb-5) var(--mb-6); /* Ajuster le padding pour les grands écrans */
   }
 }
