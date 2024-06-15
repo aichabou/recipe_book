@@ -94,8 +94,8 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
-  width: 200px;
-  height: 200px;
+  /* width: 200px; */
+  /* height: 200px; */
   margin: auto;
   margin-bottom: 30px;
 }
@@ -151,6 +151,7 @@ img {
   background-color: var(--first-color);
   color: #fff;
   margin-left: -70px;
+  padding-top: 30px;
 }
 
 .nav__list {
@@ -161,7 +162,7 @@ img {
 }
 
 .nav__item {
-  margin-left: 20px; /* Espacement entre les éléments de la liste */
+  margin-left: 20px;
 }
 
 .nav__item a {
@@ -176,9 +177,9 @@ img {
 
 /* Styles pour le menu burger */
 .nav__burger {
-  display: none; /* Masque le menu burger par défaut */
-  font-size: 1.5rem; /* Taille de l'icône du burger */
-  cursor: pointer; /* Curseur indiquant qu'il s'agit d'un élément cliquable */
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 .logo {
   width: 20px;
@@ -188,45 +189,43 @@ img {
 /* Sidebar pour les écrans mobiles */
 @media screen and (max-width: 768px) {
   .nav {
-       /* Affiche les éléments en colonne pour les petits écrans */
       position: relative;
       margin-top: -25px;
   }
 
   .nav__list {
-      display: none; /* Masque la liste de navigation par défaut */
+      display: none;
       position: absolute;
-      top: 100%; /* Positionne la liste sous le header */
+      top: 100%;
       left: 0;
       width: 100%;
-      background-color: var(--first-color); /* Couleur de fond du sidebar */
-      /* Ombre pour le sidebar */
+      background-color: var(--first-color);
       z-index: 1000;
   }
 
   .nav__list.active {
-      display: flex; /* Affiche la liste de navigation lorsqu'elle est active */
+      display: flex;
       flex-direction: column;
   }
 
   .nav__item {
-      margin: 20px 0; /* Espacement entre les éléments de la liste dans le sidebar */
-      text-align: center; /* Centre les éléments du menu dans le sidebar */
+      margin: 20px 0;
+      text-align: center;
   }
 
   .nav__item a {
-      display: block; /* Affiche les liens sur toute la largeur du sidebar */
-      padding: 15px 20px; /* Espacement intérieur des liens */
+      display: block;
+      padding: 15px 20px;
   }
 
 
   .nav__burger {
-      display: block; /* Affiche le menu burger uniquement pour les écrans mobiles */
+      display: block;
   }
 
 .logo--hidden {
-    opacity: 0; /* Masquer le logo en le rendant invisible */
-    pointer-events: none; /* Empêcher les interactions avec le logo lorsqu'il est invisible */
+    opacity: 0;
+    pointer-events: none;
 }
 }
 
@@ -297,7 +296,7 @@ img {
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 240px;
+    width: 300px;
     margin-top: 50px;
     margin-left: 360px;
     -webkit-animation: glide 2s ease-in-out alternate infinite;
@@ -342,7 +341,7 @@ img {
     width: 500px;
   }
   .section-title{
-    font-size: var(--top-font-size);
+    font-size: 10px;
   }
   .rounded-input ,.bording-button{
     font-size: 15px;
@@ -523,7 +522,7 @@ input {
 
 .home__title {
   font-size: var(--h2-font-size);
-  margin-top: 50px;
+  margin-top: 80px;
   text-align: center;
 }
 
@@ -532,8 +531,9 @@ input {
 }
 
 .home__img {
-  width: 35%;
+  width: 50%;
   margin: 1rem auto;
+  margin-bottom: 30px;
   display: block;
   margin-top: 90px;
   animation: glide 2s ease-in-out alternate infinite;
@@ -569,6 +569,7 @@ input {
 @media screen and (min-width: 768px) {
   .home__title {
     margin-bottom: 2rem;
+    font-size: 3rem;
   }
 }
 
@@ -606,6 +607,7 @@ input {
 }
 
 .about__text {
+  margin-top: 30px;
   margin-right: 20px;
   text-align: justify;
 }
@@ -777,7 +779,7 @@ input {
   color: #fff;
   text-align: center;
   font-weight: var(--font-semi);
-  padding: var(--mb-2) var(--mb-3); /* Ajouter un peu de padding pour un meilleur aspect */
+  padding: var(--mb-2) var(--mb-3);
 }
 
 .footer__social {
@@ -805,7 +807,7 @@ input {
   }
 
   .footer {
-    padding: var(--mb-3) var(--mb-4); /* Ajuster le padding pour les tablettes */
+    padding: var(--mb-3) var(--mb-4);
   }
 }
 
@@ -820,7 +822,8 @@ input {
   }
 
   .footer {
-    padding: var(--mb-4) var(--mb-5); /* Ajuster le padding pour les ordinateurs portables */
+    padding: var(--mb-4) var(--mb-5);
+    margin-top: 30px;
   }
 }
 
@@ -835,6 +838,127 @@ input {
   }
 
   .footer {
-    padding: var(--mb-5) var(--mb-6); /* Ajuster le padding pour les grands écrans */
+    padding: var(--mb-5) var(--mb-6);
+  }
+}
+
+
+.section-title{
+  font-size: 1.5rem;
+}
+.work-section {
+  padding: var(--mb-4) 0;
+  text-align: center;
+}
+
+.work__container {
+  row-gap: 2rem;
+  padding-top: 70px;
+  padding-bottom: 70px;
+  display: grid;
+  place-items: center;
+}
+
+.work__img {
+  width: 200px;
+  height: 150px;
+  padding: 0;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.work__img * {
+  transition: 0.3s ease all;
+}
+
+.work__img img {
+  margin: 0;
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.work__img h3 {
+  text-align: center;
+  margin-top: 10px;
+  padding: 12px 12px 48px;
+  line-height: 32px;
+  font-weight: 500;
+  font-size: 20px;
+  color: #F6BD60;
+}
+
+.work__img .focus-content {
+  display: block;
+  padding: 8px 12px;
+  color: #84A59D;
+}
+
+.work__img p {
+  text-align: center;
+  font-size: 10px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.work__img:hover img,
+.card:focus-within img {
+  margin-top: -80px;
+  opacity: 0.3;
+}
+
+.work__img:hover h3,
+.card:focus-within h3 {
+  padding: 8px 12px 0;
+}
+
+.button {
+  font-size: 10px;
+  padding: 10px;
+}
+
+@media screen and (min-width: 768px) {
+  .work__container {
+    padding: 20px 0 20px 20px;
+  }
+
+  h2 {
+    padding-top: 30px;
+  }
+
+  .button {
+    font-size: 13px;
+    padding: 13px;
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+
+  .section-title{
+  font-size: 4rem;
+}
+  .work__container {
+    margin: 0 auto;
+  }
+
+  .button {
+    font-size: 15px;
+    padding: 15px;
+  }
+}
+@media screen and (min-width: 1440px) {
+  .section-title{
+  font-size: 5rem;
+}
+  .work__container {
+    height: calc(85vh - 1rem);
+  }
+  .button {
+    font-size: 20px;
+    padding: 20px;
   }
 }
