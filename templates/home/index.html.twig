@@ -2,19 +2,16 @@
 
 {% block body %}
     <h1>Bienvenue sur notre livre de recettes !</h1>
-
-    {# Bouton de déconnexion #}
-    {% if app.user %}
-        <div>
-            <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
     
-    <div>
-        <a href="{{ path('app_recipe') }}">Ajouter une recette</a>
-    </div>
-    <br>
-    <br>
+    {# Bouton d'ajout de recette (affiché uniquement pour l'administrateur) #}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div>
+            <a href="{{ path('app_recipe') }}">Ajouter une recette</a>
+        </div>
+        <br>
+        <br>
+    {% endif %}
+
     <div>
         {% for recipe in recipes %}
             <div>

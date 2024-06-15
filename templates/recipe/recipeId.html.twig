@@ -4,28 +4,32 @@
 
 {% block body %}
 <div>
-{% if recipe %}
-<h1>{{ recipe.name }}</h1>
-{% if recipe.image %}
-<img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}" width="200" height="150">
-{% endif %}
-<ul>
-<h3> Les ingrédients </h3>
-<li>{{ recipe.ingredients }}</li>
+    {% if recipe %}
+        <h1>{{ recipe.name }}</h1>
+        {% if recipe.image %}
+            <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}" width="200" height="150">
+        {% endif %}
+        <ul>
+            <h3>Les ingrédients</h3>
+            <li>{{ recipe.ingredients }}</li>
+        </ul>
+        <h3>Les instructions</h3>
+        <p>{{ recipe.instructions }}</p>
 
-</ul>
-<h3> Les instructions </h3>
-<p>{{ recipe.instructions }}</p>
- <div>
-            <a href="{{ path('app_recipe_update', {'recipe': recipe.id}) }}">Modifier la recette</a>
-        </div>
-        <div>
-            <form action="{{ path('app_recipe_delete', {'recipe': recipe.id}) }}" method="post">
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
-                <button type="submit">Supprimer la recette</button>
-            </form>
-        </div>
+        {# Boutons de modification et de suppression (affichés uniquement pour l'administrateur) #}
+        {% if is_granted('ROLE_ADMIN') %}
+            <div>
+                <a href="{{ path('app_recipe_update', {'recipe': recipe.id}) }}">Modifier la recette</a>
+            </div>
+            <div>
+                <form action="{{ path('app_recipe_delete', {'recipe': recipe.id}) }}" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+                    <button type="submit">Supprimer la recette</button>
+                </form>
+            </div>
+        {% endif %}
+
     {% else %}
         <p>Recette non trouvée.</p>
     {% endif %}
