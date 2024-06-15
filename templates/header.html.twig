@@ -2,15 +2,16 @@
     <nav class="nav">
         <ul class="nav__list">
             {% if not app.user %}
-                <li class="nav__item"><a class="nav__link{% if app.request.attributes.get('_route') == 'home' %} active{% endif %}">Accueil</a></li>
+                <li class="nav__item"><a href="{{ path('welcomepage') }}" class="nav__link{% if app.request.attributes.get('_route') == 'home' %} active{% endif %}">Accueil</a></li>
                 <li class="nav__item"><a href="{{ path('app_login') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_login' %} active{% endif %}">Connexion</a></li>
                 <li class="nav__item"><a href="{{ path('app_register') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_register' %} active{% endif %}">Inscription</a></li>
             {% else %}
-                <li class="nav__item"><a  class="nav__link{% if app.request.attributes.get('_route') == 'home' %} active{% endif %}">Accueil</a></li>
-                <li class="nav__item"><a  class="nav__link{% if app.request.attributes.get('_route') == 'recipes' %} active{% endif %}">Recettes</a></li>
+                {# Ne rien afficher pour le lien "Accueil" lorsque l'utilisateur est connecté #}
+                {# Vous pouvez mettre d'autres liens ou logique ici s'il y a lieu #}
+                <li class="nav__item"><a href="{{ path('app_home') }}" class="nav__link{% if app.request.attributes.get('_route') == 'recipes' %} active{% endif %}">Recettes</a></li>
                 <li class="nav__item">
-                    <form action="{{ path('app_logout') }}" method="post">
-                        <button type="submit" class="nav__link">Déconnexion</button>
+                   <form id="logoutForm" action="{{ path('app_logout') }}" method="post">
+                        <a href="#" class="nav__link" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Déconnexion</a>
                     </form>
                 </li>
             {% endif %}

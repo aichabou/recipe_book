@@ -1,29 +1,34 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Bienvenue sur notre livre de recettes !</h1>
-    
-    {# Bouton d'ajout de recette (affiché uniquement pour l'administrateur) #}
-    {% if is_granted('ROLE_ADMIN') %}
-        <div>
-            <a href="{{ path('app_recipe') }}">Ajouter une recette</a>
-        </div>
-        <br>
-        <br>
-    {% endif %}
-
-    <div>
-        {% for recipe in recipes %}
+    <section class="work-section" id="portfolio">
+        <h2 class="section-title">Bienvenue sur notre livre de recettes !</h2>
+        
+        {# Bouton d'ajout de recette (affiché uniquement pour l'administrateur) #}
+        {% if is_granted('ROLE_ADMIN') %}
             <div>
-                <a href="{{ path('app_recipe_id', {'name': recipe.name}) }}">
-                    {% if recipe.image %}
-                        <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}" width="200" height="150">
-                    {% endif %}
-                    <h2>{{ recipe.name }}</h2>
-                </a>
-                <p>{{ recipe.description }}</p>
+                <a href="{{ path('app_recipe') }}" class="button">Ajouter une recette</a>
             </div>
-        {% endfor %}
-    </div>
 
+        {% endif %}
+
+        <div class="work-back">
+            <div class="work__container bd-grid">
+                {% for recipe in recipes %}
+                    <div class="work__img">
+                        <a href="{{ path('app_recipe_id', {'name': recipe.name}) }}">
+                            {% if recipe.image %}
+                                <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}">
+                            {% endif %}
+                            <h3>{{ recipe.name }}</h3>
+                            <div class="focus-content">
+                                <!-- Add any additional content or details if needed -->
+                            </div>
+                        </a>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {% endblock %}

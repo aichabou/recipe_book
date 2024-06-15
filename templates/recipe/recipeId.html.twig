@@ -1,37 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}
+    {% if recipe %}
+        {{ recipe.name }}
+    {% else %}
+        Recette non trouvée
+    {% endif %}
+{% endblock %}
 
 {% block body %}
-<div>
-    {% if recipe %}
-        <h1>{{ recipe.name }}</h1>
-        {% if recipe.image %}
-            <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}" width="200" height="150">
-        {% endif %}
-        <ul>
-            <h3>Les ingrédients</h3>
-            <li>{{ recipe.ingredients }}</li>
-        </ul>
-        <h3>Les instructions</h3>
-        <p>{{ recipe.instructions }}</p>
-
-        {# Boutons de modification et de suppression (affichés uniquement pour l'administrateur) #}
-        {% if is_granted('ROLE_ADMIN') %}
+    <section class="about section" id="about">
+        <h2 class="section-title">{{ recipe.name }}</h2>
+        <div class="about__container bd-grid">
+            {% if recipe.image %}
+                <div class="about__img">
+                    <img src="{{ asset('uploads/images/' ~ recipe.image) }}" alt="{{ recipe.name }}">
+                </div>
+            {% endif %}
             <div>
-                <a href="{{ path('app_recipe_update', {'recipe': recipe.id}) }}">Modifier la recette</a>
-            </div>
-            <div>
-                <form action="{{ path('app_recipe_delete', {'recipe': recipe.id}) }}" method="post">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
-                    <button type="submit">Supprimer la recette</button>
-                </form>
-            </div>
-        {% endif %}
+                <p class="about__text">
+                    {{ recipe.description }}
+                </p>
 
-    {% else %}
-        <p>Recette non trouvée.</p>
-    {% endif %}
-</div>
+                <h3>Ingrédients</h3>
+                <div>
+                    <ul class="points">
+                        <li>{{ recipe.ingredients }}</li>
+                    </ul>
+                </div>
+
+                <h3>Instructions</h3>
+                <br>
+                <div>
+                    <ul class="points">
+                        
+                            <li>{{ recipe.instructions  }}</li>
+                        
+                    </ul>
+                </div>
+            </div>
+
+            {# Boutons de modification et de suppression (affichés uniquement pour l'administrateur) #}
+            {% if is_granted('ROLE_ADMIN') %}
+                <div>
+                    <a href="{{ path('app_recipe_update', {'recipe': recipe.id}) }}" class="button">Modifier la recette</a>
+                </div>
+                <div>
+                    <form action="{{ path('app_recipe_delete', {'recipe': recipe.id}) }}" method="post">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+                        <button type="submit" class="button">Supprimer la recette</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

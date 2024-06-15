@@ -3,28 +3,51 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="bording-container">
+        <div class="bording-box">
+            <h2 class="section-title">Register</h2>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email, {
-            'attr': {'oninput': 'validateEmail()'}
-        }) }}
-        <small id="emailHelp" class="form-text text-muted">
-            Your email should be a valid email address.
-        </small>
-        
-        {{ form_row(registrationForm.username) }}
-        
-        {{ form_row(registrationForm.plainPassword, {
-            'label': 'Password',
-            'attr': {'oninput': 'validatePassword()'}
-        }) }}
-        <small id="passwordHelp" class="form-text text-muted">
-            Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
-        </small>
+            {{ form_start(registrationForm) }}
 
-        <button type="submit" id="registerButton" class="btn" disabled>Register</button>
-    {{ form_end(registrationForm) }}
+                <div class="common-style">
+                    {{ form_row(registrationForm.username, {
+                        'label': 'Username',
+                        'attr': {
+                            'class': 'rounded-input'
+                        }
+                    }) }}
+                </div>
+
+                                <div class="common-style">
+                    {{ form_row(registrationForm.email, {
+                        'label': 'Email',
+                        'attr': {
+                            'class': 'rounded-input',
+                            'oninput': 'validateEmail()'
+                        }
+                    }) }}
+                    <small id="emailHelp" class="form-text text-muted">
+                        Your email should be a valid email address.
+                    </small>
+                </div>
+
+                <div class="common-style">
+                    {{ form_row(registrationForm.plainPassword, {
+                        'label': 'Password',
+                        'attr': {
+                            'class': 'rounded-input',
+                            'oninput': 'validatePassword()'
+                        }
+                    }) }}
+                    <small id="passwordHelp" class="form-text text-muted">
+                        Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
+                    </small>
+                </div>
+
+                <button type="submit" id="registerButton" class="bording-button" disabled>Register</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
 
     <script>
         function validateEmail() {
