@@ -1,6 +1,6 @@
 <header class="header">
     <nav class="nav">
-        <div class="nav__burger">☰</div> <!-- Icône de menu burger -->
+        <div class="nav__burger">☰</div>
         <ul class="nav__list">
             {% if not app.user %}
                 <li class="nav__item">
@@ -9,15 +9,13 @@
                 <li class="nav__item"><a href="{{ path('app_login') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_login' %} active{% endif %}">Connexion</a></li>
                 <li class="nav__item"><a href="{{ path('app_register') }}" class="nav__link{% if app.request.attributes.get('_route') == 'app_register' %} active{% endif %}">Inscription</a></li>
             {% else %}
-                {# Ne rien afficher pour le lien "Accueil" lorsque l'utilisateur est connecté #}
-                {# Vous pouvez mettre d'autres liens ou logique ici s'il y a lieu #}
                 <li class="nav__item">
                     <img src="{{ asset('img/logo.png') }}" alt="Logo du blog" class="logo">
                 </li>
                 <li class="nav__item"><a href="{{ path('app_home') }}" class="nav__link{% if app.request.attributes.get('_route') == 'recipes' %} active{% endif %}">Recettes</a></li>
                 <li class="nav__item">
-                   <form id="logoutForm" action="{{ path('app_logout') }}" method="post">
-                        <a href="#" class="nav__link" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Déconnexion</a>
+                    <form id="logoutForm" action="{{ path('app_logout') }}" method="post">
+                        <a class="nav__link" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Déconnexion</a>
                     </form>
                 </li>
             {% endif %}
@@ -32,14 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     burger.addEventListener('click', function() {
         navList.classList.toggle('active');
-        logo.classList.toggle('logo--hidden'); // Ajoutez une classe logo--hidden pour contrôler la visibilité du logo
+        logo.classList.toggle('logo--hidden');
     });
 
-    // Fermer le sidebar en cliquant en dehors de celui-ci
     document.addEventListener('click', function(event) {
         if (!navList.contains(event.target) && event.target !== burger) {
             navList.classList.remove('active');
-            logo.classList.remove('logo--hidden'); // Assurez-vous que le logo redevient visible en dehors du menu burger
+            logo.classList.remove('logo--hidden');
         }
     });
 });
