@@ -7,6 +7,11 @@
         Recette non trouvée
     {% endif %}
 {% endblock %}
+{% block meta_description %}
+    {% if recipe %}
+        Découvrez la recette de {{ recipe.name }} avec tous les ingrédients et instructions détaillées.
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <section class="about section" id="about">

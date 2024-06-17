@@ -1,28 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <div class="bording-container">
-        <div class="bording-box">
-            <h2 class="section-title">Connexion</h2>
-            <form id="loginForm" action="{{ path('app_login') }}" method="post">
-                <div class="form-group">
-                    <label for="username" class="common-style">Email:</label>
-                    <input type="text" id="username" name="_username" value="{{ last_username }}" class="rounded-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="common-style">Password:</label>
-                    <div class="password-input-container">
-                        <input type="password" id="password" name="_password" class="rounded-input" required>
-                        <span class="toggle-password" onclick="togglePassword()">Show</span>
-                    </div>
-                </div>
-                <button type="submit" class="bording-button">Login</button>
-                <small id="formError" class="common-style" style="color: red; display: none;"></small>
-            </form>
-        </div>
-    </div>
+{% block title %}Connexion{% endblock %}
 
-    <script>
+{% block meta_description %}Connectez-vous à votre compte pour accéder à toutes nos recettes et fonctionnalités exclusives.{% endblock %}
+
+{% block body %}
+<div class="bording-container">
+    <div class="bording-box">
+        <h2 class="section-title">Connexion</h2>
+        <form id="loginForm" action="{{ path('app_login') }}" method="post">
+            <div class="form-group">
+                <label for="username" class="common-style">Email:</label>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" class="rounded-input" placeholder="Entrez votre email" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="common-style">Mot de passe:</label>
+                <input type="password" id="password" name="_password" class="rounded-input" placeholder="Entrez votre mot de passe" required>
+            </div>
+            <button type="submit" class="bording-button">Connexion</button>
+        </form>
+        {% if error %}
+            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+    </div>
+</div>
+  <script>
         // Fonction pour montrer/cacher le mot de passe
         function togglePassword() {
             const passwordInput = document.querySelector('#password');

@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block meta_description %}Inscrivez-vous sur notre blog pour accéder à des recettes exclusives et bien plus encore !{% endblock %}
 
 {% block body %}
     <div class="bording-container">
@@ -11,9 +13,10 @@
 
             <div class="common-style">
                 {{ form_row(registrationForm.username, {
-                    'label': 'Username',
+                    'label': 'Nom d\'utilisateur',
                     'attr': {
-                        'class': 'rounded-input'
+                        'class': 'rounded-input',
+                         'placeholder': 'Entrez votre nom d\'utilisateur'
                     }
                 }) }}
             </div>
@@ -23,27 +26,29 @@
                     'label': 'Email',
                     'attr': {
                         'class': 'rounded-input',
-                        'oninput': 'validateEmail()'
+                        'oninput': 'validateEmail()',
+                        'placeholder': 'Entrez votre email'
                     }
                 }) }}
                 <small id="emailHelp" class="form-text text-muted">
-                    Your email should be a valid email address.
+                    Votre email doit être une adresse valide.
                 </small>
             </div>
 
             <div class="common-style">
-                {{ form_label(registrationForm.plainPassword, 'Password') }}
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe') }}
                 <div class="password-input-container">
                     {{ form_widget(registrationForm.plainPassword, {
                         'attr': {
                             'class': 'rounded-input',
-                            'oninput': 'validatePassword()'
+                            'oninput': 'validatePassword()',
+                            'placeholder': 'Entrez votre mot de passe'
                         }
                     }) }}
-                    <span class="toggle-password" onclick="togglePassword()">Show</span>
+                    <span class="toggle-password" onclick="togglePassword()">Afficher</span>
                 </div>
                 <small id="passwordHelp" class="form-text text-muted">
-                    Your password should be at least 6 characters long, contain at least one uppercase letter, and one special character.
+                   Votre mot de passe doit comporter au moins 6 caractères, contenir au moins une majuscule et un caractère spécial.
                 </small>
             </div>
 
@@ -60,11 +65,11 @@
             let message = '';
 
             if (email.length === 0) {
-                message = 'Email is required.';
+                message = 'Email est requis.';
             } else if (!emailRegex.test(email)) {
-                message = 'Invalid email format. A valid email should be like: user@example.com.';
+                message = 'Format d\'email invalide. Un email valide doit ressembler à : user@example.com.';
             } else {
-                message = 'Valid email address.';
+                message = 'Adresse email valide.';
             }
 
             emailHelp.style.color = emailRegex.test(email) ? 'green' : 'red';
@@ -81,15 +86,15 @@
             const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
             if (password.length === 0) {
-                message = 'Password is required.';
+                message = 'Mot de passe est requis.';
             } else if (password.length < minLength) {
-                message = `Your password should be at least ${minLength} characters long. Currently, it has ${password.length} characters.`;
+                message = `Votre mot de passe doit comporter au moins ${minLength} caractères. Actuellement, il a ${password.length} caractères.`;
             } else if (!hasUpperCase) {
-                message = 'Your password should contain at least one uppercase letter.';
+                message = 'Votre mot de passe doit contenir au moins une lettre majuscule.';
             } else if (!hasSpecialChar) {
-                message = 'Your password should contain at least one special character.';
+                message = 'Votre mot de passe doit contenir au moins un caractère spécial.';
             } else {
-                message = 'Valid password.';
+                message = 'Mot de passe valide.';
             }
 
             passwordHelp.style.color = (password.length >= minLength && hasUpperCase && hasSpecialChar) ? 'green' : 'red';
